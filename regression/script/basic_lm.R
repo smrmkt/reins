@@ -23,18 +23,23 @@ for (i in 1:5) {
 }
 
 # plot
+qcolors <- c("#720da8", "#f39800", "#009944", "#0068b7", "#e4007f")
 get_graph <- function(graph, data, color) {
   graph <- graph + geom_point(data=data, shape=20, size=3, col=color)
+  #return(graph + geom_smooth(data=data, col=color)) #局所線形回帰の場合
   return(graph + geom_smooth(data=data, method="lm", col=color))
 }
-g <- ggplot(data=subset(d, distance==1), aes(x=from, y=price))
+g <- ggplot(data=d, aes(x=from, y=price, fill=reorder(distance_raw, distance)))
 for (i in 1:5) {
-  g <- get_graph(g, subset(d, distance==i), i)
+  g <- get_graph(g, subset(d, distance==i), qcolors[i])
 }
 g <- g + xlim(1960, 2014) + ylim(0, 120) + xlab('築年 [年]') + ylab('平方単価 [万円]')
+g <- g + labs(fill='駅からの距離')
 g <- g + theme_bw(base_family = "HiraKakuProN-W3")+
-  theme(axis.title.x=element_text(size=16),
-        axis.title.y=element_text(size=16),
+  theme(axis.title.x=element_text(size=20),
+        axis.title.y=element_text(size=20),
         axis.text.x=element_text(size=16),
-        axis.text.y=element_text(size=16))
+        axis.text.y=element_text(size=16),
+        legend.title=element_text(size=20),
+        legend.text=element_text(size=16))
 plot(g)
