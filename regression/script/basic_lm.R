@@ -26,7 +26,7 @@ for (i in 1:5) {
 qcolors <- c("#720da8", "#f39800", "#009944", "#0068b7", "#e4007f")
 get_graph <- function(graph, data, color) {
   graph <- graph + geom_point(data=data, shape=20, size=3, col=color)
-  #return(graph + geom_smooth(data=data, col=color)) #局所線形回帰の場合
+  #return(graph + geom_smooth(data=data, col=color)) #局所多項式回帰の場合
   return(graph + geom_smooth(data=data, method="lm", col=color))
 }
 g <- ggplot(data=d, aes(x=from, y=price, fill=reorder(distance_raw, distance)))
