@@ -2,6 +2,7 @@
 library('ggplot2')
 library('rjags')
 library('R2WinBUGS')
+library('dclone')
 library('dplyr')
 
 # load data
@@ -74,6 +75,8 @@ post.list <- coda.samples(
   n.iter = 1500
 )
 summary(post.list)
+dcdiag(post.list)
+dctable(post.list)
 
 # graph
 plot(post.list)
