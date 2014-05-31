@@ -5,6 +5,30 @@ library('R2WinBUGS')
 library('dclone')
 library('dplyr')
 
+# mcmc visualizer
+mcmc.list2bugs <- function(mcmc.list) {
+  b1 <- mcmc.list[[1]]
+  m1 <- as.matrix(b1)
+  mall <- matrix(numeric(0), 0, ncol(m1))
+  n.chains <- length(mcmc.list)
+  for (i in 1:n.chains) {
+    mall <- rbind(mall, as.matrix(mcmc.list[[i]]))
+  }
+  sims.array <- array(mall, dim = c(nrow(m1), n.chains, ncol(m1)))
+  dimnames(sims.array) <- list(NULL, NULL, colnames(m1))
+  mcpar <- attr(b1, "mcpar")
+  as.bugs.array(
+    sims.array = sims.array,
+    model.file = NULL,
+    program = NULL,
+    DIC = FALSE,
+    DICOutput = NULL,
+    n.iter = mcpar[2],
+    n.burnin = mcpar[1] - mcpar[3],
+    n.thin = mcpar[3]
+  )
+}
+
 # load data
 d <- read.delim('data/mantions.csv', header=T, sep=',')
 d <- na.omit(d)
@@ -75,8 +99,11 @@ post.list <- coda.samples(
   n.iter = 1500
 )
 summary(post.list)
+print(mcmc.list2bugs(post.list))
 dcdiag(post.list)
 dctable(post.list)
+
+
 
 # graph
 plot(post.list)
