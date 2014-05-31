@@ -96,7 +96,7 @@ post.list <- coda.samples(
   model,
   params,
   thin = 3,
-  n.iter = 15000
+  n.iter = 1500
 )
 summary(post.list)
 mcmc.list2bugs(post.list)
