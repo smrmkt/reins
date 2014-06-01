@@ -38,15 +38,15 @@ d <- na.omit(d)
 mantion_model <- function() {
   # main model
   for (i in 1:N) {
-    PRICE[i] ~ dnorm(b+bS[STATION[i]]+bT[TRAIN[i]], tau[1])
+    PRICE[i] ~ dnorm(b+rS[STATION[i]]+rT[TRAIN[i]], tau[1])
   }
   # prior distribution
-  b  ~ dnorm(0.0, 1.0e-6)
+  b   ~ dnorm(0.0, 1.0e-6)
   for (i in 1:N.station) {
-    bS[i] ~ dnorm(0.0, tau[2])
+    rS[i] ~ dnorm(0.0, tau[3])
   }
   for (i in 1:N.train) {
-    bT[i] ~ dnorm(0.0, tau[3])
+    rT[i] ~ dnorm(0.0, tau[4])
   }
   for (i in 1:N.tau) {
     tau[i] <- 1 / (sigma[i] * sigma[i])
@@ -72,13 +72,13 @@ list.data <- list(
 # initial value for JAGS
 inits <- list(
   b     = rnorm(1, 39.22, 16.88),
-  bS    = rnorm(length(unique(d$station)), 0, 100),
-  bT    = rnorm(length(unique(d$train)), 0, 100),
+  rS    = rnorm(length(unique(d$station)), 0, 100),
+  rT    = rnorm(length(unique(d$train)), 0, 100),
   sigma = runif(3, 0, 100)
 )
 
 # estimate parameters
-params <- c('b', 'bS', 'bT', 'sigma')
+params <- c('b', 'rS', 'rT', 'sigma')
 
 # model definition
 model <- jags.model(
