@@ -64,7 +64,7 @@ list.data <- list(
   ROOM       = d$room,
   SPACE      = d$space,
   N          = nrow(d),
-  N.tau      = 4
+  N.tau      = 5
 )
 
 # initial value for JAGS
@@ -74,7 +74,7 @@ inits <- list(
   bF    = rnorm(1, 0, 100),
   bR    = rnorm(1, 0, 100),
   bS    = rnorm(1, 0, 100),
-  sigma = runif(4, 0, 100)
+  sigma = runif(5, 0, 100)
 )
 
 # estimate parameter
@@ -89,14 +89,14 @@ model <- jags.model(
 )
 
 # set MCMC burn-in cycles
-update(model, 100)
+update(model, 100000)
 
 # conduct MCMC silumation results
 post.list <- coda.samples(
   model,
   params,
-  thin = 3,
-  n.iter = 1500
+  thin = 40,
+  n.iter = 100000
 )
 summary(post.list)
 mcmc.list2bugs(post.list)
