@@ -22,7 +22,12 @@ fit.matrix = stan(file="script/mcmc_basic_lm_vector.stan",
                   chains=1)
 for (i in 1:100) {
   time_matrix[i] = system.time(
-    basic_lm.fit<-stan(fit=fit.matrix, data=d.stan, iter=100, chains=1)  
+    basic_lm.fit<-stan(fit=fit.matrix,
+                       data=d.stan,
+                       iter=1000,
+                       chains=1,
+                       thin=10,
+                       warmup=100)  
   )
 }
 ## vector operation with for loop
@@ -32,7 +37,12 @@ fit.vector<-stan(file="script/mcmc_basic_lm_vector_row.stan",
                  chains=1)
 for (i in 1:100) {
   time_vector[i] = system.time(
-    basic_lm.fit<-stan(fit=fit.vector, data=d.stan, iter=100, chains=1)  
+    basic_lm.fit<-stan(fit=fit.vector,
+                       data=d.stan,
+                       iter=1000,
+                       chains=1,
+                       thin=10,
+                       warmup=100)  
   )
 }
 
@@ -49,6 +59,11 @@ fit.linear<-stan(file="script/mcmc_basic_lm.stan",
                  chains=1)
 for (i in 1:100) {
   time_linear[i] = system.time(
-    basic_lm.fit<-stan(fit=fit.linear, data=d.stan, iter=100, chains=1)  
+    basic_lm.fit<-stan(fit=fit.linear,
+                       data=d.stan,
+                       iter=1000,
+                       chains=1,
+                       thin=10,
+                       warmup=100)  
   )
 }
