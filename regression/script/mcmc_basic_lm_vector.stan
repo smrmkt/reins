@@ -10,6 +10,5 @@ parameters {
     real<lower=0> sigma;
 }
 model {
-    for(i in 1:N)
-        Y[i] ~ normal(alpha + X[i] * beta, sigma);
+    Y ~ normal(alpha + X * beta, sigma);
 }
