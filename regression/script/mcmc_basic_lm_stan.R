@@ -17,3 +17,12 @@ basic_lm.fit<-stan(file="script/mcmc_basic_lm.stan",
                    data=d.stan,
                    iter=100,
                    chains=3)
+
+# result
+## parameter trace
+traceplot(basic_lm.fit, ask=T)
+## parameter estimate with percentile
+print(basic_lm.fit, digits_summary=2)
+## extract sampling parameter
+la <- extract(basic_lm.fit, permuted = TRUE)
+la$b_d
