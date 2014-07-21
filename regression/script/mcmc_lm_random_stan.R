@@ -33,12 +33,24 @@ sflist = foreach(i=1:N.chain, .packages='rstan') %dopar% {
     chains=1, chain_id=i, refresh=-1
   )
 }
-model.fits <- sflist2stanfit(sflist)
+model.fit <- sflist2stanfit(sflist)
 stopCluster(cl)
 
-## parameter trace
-traceplot(model.fit, ask=T)
-## parameter estimate with percentile
-print(model.fit, digits_summary=2)
-## extract sampling parameter
-la <- extract(model.fit, permuted = TRUE)
+# save data
+save.image("output/mcmc_lm_random_stan/result.Rdata")
+## get summary
+print(fit, digits_summary=3)
+fit.summary <- data.frame(summary(fit)$summary)
+write.table(fit.summary,
+            file="output/mcmc_lm_random_stan/fit_summary.txt",
+            sep="\t",
+            quote=F,
+            col.names=NA)
+## get plot
+pdf("output/fit_plot.pdf", width=600/72, height=600/72)
+plot(fit)
+dev.off()
+## get traceplot
+pdf("output/fit_traceplot.pdf", width=600/72, height=600/72)
+traceplot(fit)
+dev.off()
