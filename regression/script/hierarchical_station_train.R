@@ -46,21 +46,21 @@ model.fit <- sflist2stanfit(sflist)
 stopCluster(cl)
 
 # save data
-save.image("output/mcmc_lm_random_stan/result.Rdata")
+save.image("output/hierarchical_station_train/result.Rdata")
 ## get summary
 print(fit, digits_summary=3)
 fit.summary <- data.frame(summary(model.fit)$summary)
 write.table(fit.summary,
-            file="output/mcmc_lm_random_stan/fit_summary.txt",
+            file="output/hierarchical_station_train/fit_summary.txt",
             sep="\t",
             quote=F,
             col.names=NA)
 ## get plot
-pdf("output/fit_plot.pdf", width=600/72, height=600/72)
+pdf("output/hierarchical_station_train/fit_plot.pdf", width=600/72, height=600/72)
 plot(model.fit)
 dev.off()
 ## get traceplot
-pdf("output/fit_traceplot.pdf", width=600/72, height=600/72)
+pdf("output/hierarchical_station_train/fit_traceplot.pdf", width=600/72, height=600/72)
 traceplot(model.fit)
 dev.off()
 
