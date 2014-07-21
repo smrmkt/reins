@@ -37,7 +37,7 @@ cl = makeCluster(N.chain)
 registerDoParallel(cl)
 sflist = foreach(i=1:N.chain, .packages='rstan') %dopar% {
   stan(
-    file='script/mcmc_lm_random.stan',
+    file='script/hierarchical_station_train.stan',
     data=d.stan, iter=2000, thin=3,
     chains=1, chain_id=i, refresh=-1
   )
