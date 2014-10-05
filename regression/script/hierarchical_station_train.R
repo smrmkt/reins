@@ -94,7 +94,7 @@ p <- ggplot(r_t.melt, aes(x=reorder(train, value),
 p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
 p <- p + geom_pointrange(data=r_t.qua.melt, size=0.20)
 p <- p + coord_flip()
-p <- p + labs(x="", y="ランダム効果 [万円/㎡]")
+p <- p + labs(x="", y="固定効果 [万円/㎡]")
 p <- p + theme_bw(base_family = "HiraKakuProN-W3")
 p <- p + theme(axis.text.x=element_text(size=5),
                axis.title.x=element_text(size=5),
@@ -155,7 +155,7 @@ p <- ggplot(r_s.melt, aes(x=reorder(station, value),
 p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
 p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
 p <- p + coord_flip()
-p <- p + labs(x="", y="ランダム効果 [万円/㎡]")
+p <- p + labs(x="", y="固定効果 [万円/㎡]")
 p <- p + theme_bw(base_family = "HiraKakuProN-W3")
 p <- p + theme(axis.text.x=element_text(size=6),
                axis.title.x=element_text(size=6),
@@ -184,7 +184,7 @@ p <- ggplot(r_s.melt, aes(x=reorder(station, value),
 p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
 p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
 p <- p + coord_flip()
-p <- p + labs(x="", y="ランダム効果 [万円/㎡]")
+p <- p + labs(x="", y="固定効果 [万円/㎡]")
 p <- p + theme_bw(base_family = "HiraKakuProN-W3")
 p <- p + theme(axis.text.x=element_text(size=6),
                axis.title.x=element_text(size=6),
