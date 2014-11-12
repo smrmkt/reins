@@ -53,16 +53,16 @@ save.image("output/2hierarchical_station_train/result.Rdata")
 print(fit, digits_summary=3)
 fit.summary <- data.frame(summary(model.fit)$summary)
 write.table(fit.summary,
-            file="output/hierarchical_station_train/fit_summary.txt",
+            file="output/2hierarchical_station_train/fit_summary.txt",
             sep="\t",
             quote=F,
             col.names=NA)
 ## get plot
-pdf("output/hierarchical_station_train/fit_plot.pdf", width=600/72, height=600/72)
+pdf("output/2hierarchical_station_train/fit_plot.pdf", width=600/72, height=600/72)
 plot(model.fit)
 dev.off()
 ## get traceplot
-pdf("output/hierarchical_station_train/fit_traceplot.pdf", width=600/72, height=600/72)
+pdf("output/2hierarchical_station_train/fit_traceplot.pdf", width=600/72, height=600/72)
 traceplot(model.fit)
 dev.off()
 

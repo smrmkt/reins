@@ -11,7 +11,6 @@ data {
 parameters {
     real             a;
     vector[M]        b;
-    real             as;
     vector[N_T]      r_t;
     real             r_s[N_S];
     real<lower=0>    s;
@@ -28,10 +27,9 @@ model {
     for (i in 1:M)
         b[i] ~ normal(0, 1.0e+4);
     for (i in 1:N_S)
-        r_s[i] ~ normal(as+ST[i]*r_t, s_rs);
+        r_s[i] ~ normal(ST[i]*r_t, s_rs);
     # hierarchical prior distribution
     s_rs ~ uniform(0, 1.0e+4);
-    as   ~ normal(0, 1.0e+4);
     for (i in 1:N_T)
         r_t[i] ~ normal(0, s_rt);
     # 2 hierarchical prior distibution
