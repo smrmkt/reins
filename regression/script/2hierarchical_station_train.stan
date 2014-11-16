@@ -12,7 +12,7 @@ parameters {
     real             a;
     vector[M]        b;
     vector[N_T]      r_t;
-    vector[N_S]      a_s;
+    vector[N_S]      as;
     real             r_s[N_S];
     real<lower=0>    s;
     real<lower=0>    s_rs;
