@@ -68,7 +68,7 @@ stopCluster(cl)
 # save data
 save.image("output/2hierarchical_station_train/result.Rdata")
 ## get summary
-print(fit, digits_summary=3)
+print(model.fit, digits_summary=3)
 fit.summary <- data.frame(summary(model.fit)$summary)
 write.table(fit.summary,
             file="output/2hierarchical_station_train/fit_summary.txt",
