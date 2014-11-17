@@ -226,8 +226,8 @@ ggsave(file="output/2hierarchical_station_train/station_full_low.png",
 # draw station(price higher) specific distribution graph
 ################################################################################
 station_names = c('みなとみらい', '新百合ケ丘', '鹿島田', '石川町', '京急川崎', 
-                  '桜木町', '元住吉', '新丸子', '武蔵中原', '京急鶴見')
-as = la$as[, c(128, 124, 89, 79, 97, 70, 47, 62, 108, 98)]
+                  '新丸子', '元住吉', '武蔵中原', '桜木町', '上大岡')
+as = la$as[, c(128, 124, 89, 79, 97, 62, 47, 108, 70, 40)]
 colnames(as) = station_names
 as.melt <- melt(as, id = c(), value="param")
 colnames(as.melt)[2] <- "station"
@@ -241,7 +241,7 @@ as.melt = data.frame(as.melt, ymax=rep(0, nrow(as.melt)), ymin=rep(0, nrow(as.me
 p <- ggplot(as.melt, aes(x=reorder(station, value),
                           y=value, group=station, color=station, ymax=ymax, ymin=ymin))
 p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
-p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
+p <- p + geom_pointrange(data=as.qua.melt, size=0.30)
 p <- p + coord_flip()
 p <- p + labs(x="", y="固定効果 [万円/㎡]")
 p <- p + theme_bw(base_family = "HiraKakuProN-W3")
@@ -255,9 +255,9 @@ ggsave(file="output/2hierarchical_station_train/station_specific_high.png",
 
 # draw station(price lower) specific distribution graph
 ################################################################################
-station_names = c('浜川崎', '追浜', '磯子', '下永谷', '新小安',
-                  '東白楽', '根岸', '新杉田', '鶴川', '子安')
-as = la$as[, c(74, 31, 27, 43, 63, 68, 18, 65, 37, 5)]
+station_names = c('浜川崎', '追浜', '磯子', '下永谷', '根岸',
+                  '東白楽', '新小安', '新杉田', '久地', '北新横浜')
+as = la$as[, c(74, 31, 27, 43, 18, 68, 63, 65, 1, 100)]
 colnames(as) = station_names
 as.melt <- melt(as, id = c(), value="param")
 colnames(as.melt)[2] <- "station"
@@ -271,7 +271,7 @@ as.melt = data.frame(as.melt, ymax=rep(0, nrow(as.melt)), ymin=rep(0, nrow(as.me
 p <- ggplot(as.melt, aes(x=reorder(station, value),
                           y=value, group=station, color=station, ymax=ymax, ymin=ymin))
 p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
-p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
+p <- p + geom_pointrange(data=as.qua.melt, size=0.30)
 p <- p + coord_flip()
 p <- p + labs(x="", y="固定効果 [万円/㎡]")
 p <- p + theme_bw(base_family = "HiraKakuProN-W3")
@@ -289,7 +289,13 @@ ggsave(file="output/2hierarchical_station_train/station_specific_low.png",
 
 # preprocessing
 ################################################################################
-# load data
+# load geo map data
+#kanagawa = readShapePoly('data/mesh03-tky-14-shp/mesh03-tky-14.shp')
+kanagawa <- readShapePoly("data/mesh05-jgd-14-shp/mesh05-jgd-14.shp")
+gpclibPermit()
+df = fortify(kanagawa)
+
+# load mantion and location data
 locations = read.csv('data/locations.tsv')
 mantions = read.csv('data/mantions.csv')
 
@@ -297,6 +303,8 @@ mantions = read.csv('data/mantions.csv')
 mantions.grouped = summarise(group_by(mantions, station), n())
 colnames(mantions.grouped)[2] = 'n'
 
+# draw geo map with station full effect
+################################################################################
 # acquire fixed effect
 hmc_samples = melt(la$r_s)
 colnames(hmc_samples)[2] = 'station'
@@ -307,12 +315,7 @@ colnames(hmc_samples.grouped)[2:3] = c('effect', 'effect_sd')
 # join data
 geo_data = merge(merge(locations, mantions.grouped), hmc_samples.grouped)
 
-# draw geo map
-################################################################################
-#kanagawa = readShapePoly('data/mesh03-tky-14-shp/mesh03-tky-14.shp')
-kanagawa <- readShapePoly("data/mesh05-jgd-14-shp/mesh05-jgd-14.shp")
-gpclibPermit()
-df = fortify(kanagawa)
+# plot
 p = ggplot(df)
 p = p + geom_polygon(
   aes(long, lat, group=group),
@@ -341,6 +344,49 @@ p <- p + theme(
   )
 )
 plot(p)
-ggsave(file='output/2hierarchical_station_train/geo_mapping.png',
+ggsave(file='output/2hierarchical_station_train/geo_mapping_full.png',
        plot=p, dpi=600, width=6, height=4)
 
+# draw geo map with station specific effect
+################################################################################
+# acquire fixed effect
+hmc_samples = melt(la$as)
+colnames(hmc_samples)[2] = 'station'
+hmc_samples.grouped = summarise(group_by(hmc_samples, station),
+                                mean(value), sd(value))
+colnames(hmc_samples.grouped)[2:3] = c('effect', 'effect_sd')
+
+# join data
+geo_data = merge(merge(locations, mantions.grouped), hmc_samples.grouped)
+
+# plot
+p = ggplot(df)
+p = p + geom_polygon(
+  aes(long, lat, group=group),
+  colour='gray90', fill='gray93', size=0.1
+)
+p = p + xlim(c(139.40, 139.80)) + ylim(c(35.30, 35.65))
+p = p + coord_equal()
+p = p + geom_point(
+  data=geo_data, alpha=0.5,
+  aes(x=long, y=lat, colour=effect, size=n)
+)
+p = p + scale_color_gradientn(colours=c('blue', 'green', 'red'))
+p = p + scale_size_continuous(range=c(1, 7))
+p <- p + theme_bw(base_family = "HiraKakuProN-W3")
+p <- p + theme(axis.text.x=element_text(size=5),
+               axis.title.x=element_text(size=8),
+               axis.text.y=element_text(size=5),
+               axis.title.y=element_text(size=8),
+               legend.title=element_text(size=5),
+               legend.text=element_text(size=5))
+p <- p + labs(x='緯度', y='経度', colour='駅の固定効果', size='物件数')
+p <- p + theme(
+  panel.background = element_rect(
+    fill = "white", colour = "black",
+    size= 0.2 , linetype = 1
+  )
+)
+plot(p)
+ggsave(file='output/2hierarchical_station_train/geo_mapping_specific.png',
+       plot=p, dpi=600, width=6, height=4)
