@@ -163,7 +163,7 @@ plot(p)
 ggsave(file="output/2hierarchical_station_train/params.png",
        plot=p, dpi=300, width=4, height=3)
 
-# draw station(price higher) distribution graph
+# draw station(price higher) full distribution graph
 ################################################################################
 station_names = c('みなとみらい', '武蔵小杉', '横浜', '日本大通り', '馬車道', 
                   '元町・中華街', '新丸子', '元住吉', '石川町', '桜木町')
@@ -190,10 +190,10 @@ p <- p + theme(axis.text.x=element_text(size=6),
                axis.text.y=element_text(size=6),
                legend.position="none")
 plot(p)
-ggsave(file="output/2hierarchical_station_train/station_h.png",
+ggsave(file="output/2hierarchical_station_train/station_full_high.png",
        plot=p, dpi=300, width=4, height=3)
 
-# draw station(price lower) distribution graph
+# draw station(price lower) full distribution graph
 ################################################################################
 station_names = c('南部市場', '八景島', '海の公園柴口', '小島新田', '産業道路',
                   '追浜', '鳥浜', '若葉台', '幸浦', 'はるひ野')
@@ -220,7 +220,67 @@ p <- p + theme(axis.text.x=element_text(size=6),
                axis.text.y=element_text(size=6),
                legend.position="none")
 plot(p)
-ggsave(file="output/2hierarchical_station_train/station_l.png",
+ggsave(file="output/2hierarchical_station_train/station_full_low.png",
+       plot=p, dpi=300, width=4, height=3)
+
+# draw station(price higher) specific distribution graph
+################################################################################
+station_names = c('みなとみらい', '新百合ケ丘', '鹿島田', '石川町', '京急川崎', 
+                  '桜木町', '元住吉', '新丸子', '武蔵中原', '京急鶴見')
+as = la$as[, c(128, 124, 89, 79, 97, 70, 47, 62, 108, 98)]
+colnames(as) = station_names
+as.melt <- melt(as, id = c(), value="param")
+colnames(as.melt)[2] <- "station"
+as.qua.melt <- ddply(as.melt, .(station), summarize,
+                      median=median(value),
+                      ymax=quantile(value, prob=0.975),
+                      ymin=quantile(value, prob=0.025))
+colnames(as.qua.melt)[2] <- "value"
+as.melt = data.frame(as.melt, ymax=rep(0, nrow(as.melt)), ymin=rep(0, nrow(as.melt)))
+## draw graph
+p <- ggplot(as.melt, aes(x=reorder(station, value),
+                          y=value, group=station, color=station, ymax=ymax, ymin=ymin))
+p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
+p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
+p <- p + coord_flip()
+p <- p + labs(x="", y="固定効果 [万円/㎡]")
+p <- p + theme_bw(base_family = "HiraKakuProN-W3")
+p <- p + theme(axis.text.x=element_text(size=6),
+               axis.title.x=element_text(size=6),
+               axis.text.y=element_text(size=6),
+               legend.position="none")
+plot(p)
+ggsave(file="output/2hierarchical_station_train/station_specific_high.png",
+       plot=p, dpi=300, width=4, height=3)
+
+# draw station(price lower) specific distribution graph
+################################################################################
+station_names = c('浜川崎', '追浜', '磯子', '下永谷', '新小安',
+                  '東白楽', '根岸', '新杉田', '鶴川', '子安')
+as = la$as[, c(74, 31, 27, 43, 63, 68, 18, 65, 37, 5)]
+colnames(as) = station_names
+as.melt <- melt(as, id = c(), value="param")
+colnames(as.melt)[2] <- "station"
+as.qua.melt <- ddply(as.melt, .(station), summarize,
+                      median=median(value),
+                      ymax=quantile(value, prob=0.975),
+                      ymin=quantile(value, prob=0.025))
+colnames(as.qua.melt)[2] <- "value"
+as.melt = data.frame(as.melt, ymax=rep(0, nrow(as.melt)), ymin=rep(0, nrow(as.melt)))
+## draw graph
+p <- ggplot(as.melt, aes(x=reorder(station, value),
+                          y=value, group=station, color=station, ymax=ymax, ymin=ymin))
+p <- p + geom_violin(trim=F, fill="#5B423D", linetype="blank", alpha=I(1/3))
+p <- p + geom_pointrange(data=r_s.qua.melt, size=0.30)
+p <- p + coord_flip()
+p <- p + labs(x="", y="固定効果 [万円/㎡]")
+p <- p + theme_bw(base_family = "HiraKakuProN-W3")
+p <- p + theme(axis.text.x=element_text(size=6),
+               axis.title.x=element_text(size=6),
+               axis.text.y=element_text(size=6),
+               legend.position="none")
+plot(p)
+ggsave(file="output/2hierarchical_station_train/station_specific_low.png",
        plot=p, dpi=300, width=4, height=3)
 
 ################################################################################
